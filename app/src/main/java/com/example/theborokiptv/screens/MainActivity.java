@@ -8,8 +8,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.theborokiptv.R;
+import com.example.theborokiptv.adapter.TvListAdapater;
 import com.example.theborokiptv.viewModel.MainActivityViewModel;
 
 
@@ -17,12 +20,16 @@ public class MainActivity extends AppCompatActivity {
     MainActivityViewModel viewModel;
     public static    String accessToken;
     private ProgressBar progressBar;
+    private RecyclerView recyclerView;
+    TvListAdapater tvListAdapater;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         progressBar = findViewById(R.id.progressBar);
+        recyclerView=findViewById(R.id.recycler_view);
 
 
         viewModel= ViewModelProviders.of(this).get(MainActivityViewModel.class);
@@ -114,7 +121,12 @@ public class MainActivity extends AppCompatActivity {
                 // call is successful
                 progressBar.setVisibility(View.GONE);
 
+                tvListAdapater = new TvListAdapater(apiResponse.getTvList(), this);
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(tvListAdapater);
                 Log.i("Success", "Data response TV " + apiResponse.getTvList());
+
 
             } else if( apiResponse.getError()!=null){
                 // call failed.
