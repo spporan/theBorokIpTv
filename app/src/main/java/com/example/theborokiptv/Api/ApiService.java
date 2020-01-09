@@ -23,7 +23,7 @@ public class ApiService {
 
     private static OkHttpClient client = new OkHttpClient.Builder().addInterceptor(chain -> {
         Request newRequest  = chain.request().newBuilder()
-                .addHeader("Authorization","Bearer "+ MainActivity.accessToken)
+                .addHeader("Authorization","Bearer "+"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc2FzdGFpcHR2LmNvbVwvYXBpXC90b2tlbiIsImlhdCI6MTU3ODU5MjU2NywiZXhwIjoxNTc4NTk2MTY3LCJuYmYiOjE1Nzg1OTI1NjcsImp0aSI6IjB5cGNtYWtFblpvcjdUNU0iLCJzdWIiOjEsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEifQ.8jibPiBKnYznS3kV2yYbvVDk92Jo4nyoXCRuq-CcAUk")
                 .build();
         return chain.proceed(newRequest);
     }).build();

@@ -1,6 +1,7 @@
 package com.example.theborokiptv.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.theborokiptv.R;
 import com.example.theborokiptv.model.TvModel;
+import com.example.theborokiptv.screens.TvScreenActivity;
 import com.google.android.material.button.MaterialButton;
 import com.squareup.picasso.Picasso;
 
@@ -42,6 +44,13 @@ public class TvListAdapater extends RecyclerView.Adapter<TvListAdapater.MyViewHo
         Log.d("Image Url :",tvModelList.get(position).getImage());
         Picasso.get().load(tvModelList.get(position).getImage()).into(holder.tvImage);
         holder.titleTv.setText(tvModelList.get(position).getTitle());
+       holder. playBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(context, TvScreenActivity.class);
+           intent.putExtra("url", tvModelList.get(position).getUrl());
+           context.startActivity(intent);
+
+        });
+
 
     }
 
@@ -63,6 +72,8 @@ public class TvListAdapater extends RecyclerView.Adapter<TvListAdapater.MyViewHo
             titleTv = itemView.findViewById(R.id.tv_title);
             playBtn = itemView.findViewById(R.id.platBtn);
             genreBtn = itemView.findViewById(R.id.genreBtn);
+
+
         }
     }
 }
