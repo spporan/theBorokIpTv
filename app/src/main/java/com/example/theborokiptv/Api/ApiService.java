@@ -1,5 +1,7 @@
 package com.example.theborokiptv.Api;
 
+import com.example.theborokiptv.screens.MainActivity;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -21,7 +23,7 @@ public class ApiService {
 
     private static OkHttpClient client = new OkHttpClient.Builder().addInterceptor(chain -> {
         Request newRequest  = chain.request().newBuilder()
-                .addHeader("Authorization","Bearer "+ ACCESS_TOKEN)
+                .addHeader("Authorization","Bearer "+ MainActivity.accessToken)
                 .build();
         return chain.proceed(newRequest);
     }).build();
@@ -30,14 +32,12 @@ public class ApiService {
 
 
     public static ApiInterface getRetrofitInstance() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .client(client)
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            apiInterface=retrofit.create(ApiInterface.class);
-        }
+        retrofit = new Retrofit.Builder()
+                .client(client)
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        apiInterface=retrofit.create(ApiInterface.class);
         return apiInterface;
     }
 

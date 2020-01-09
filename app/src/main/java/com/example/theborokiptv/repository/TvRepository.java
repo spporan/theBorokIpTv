@@ -21,7 +21,7 @@ public class TvRepository {
 
    }
 
-   private LiveData<ApiResponse> getAccessToken(){
+   public LiveData<ApiResponse> getAccessToken(){
        final MutableLiveData<ApiResponse> AccessTokenResponse = new MutableLiveData<>();
 
         apiInterface.getAccessToken().enqueue(new Callback<AccessToken>() {
@@ -42,7 +42,7 @@ public class TvRepository {
 
    }
 
-   private LiveData<ApiResponse>getTvList(int numberOfPage,int page){
+   public LiveData<ApiResponse>getTvList(int numberOfPage,int page){
        final MutableLiveData<ApiResponse> tvListResponse = new MutableLiveData<>();
        apiInterface.getTvList(numberOfPage,page).enqueue(new Callback<DataModel>() {
            @Override

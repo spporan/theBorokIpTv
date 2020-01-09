@@ -1,27 +1,58 @@
-package com.example.theborokiptv;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.theborokiptv.screens;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.theborokiptv.Api.ApiInterface;
-import com.example.theborokiptv.Api.ApiService;
-import com.example.theborokiptv.model.AccessToken;
-import com.example.theborokiptv.model.DataModel;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.example.theborokiptv.R;
+import com.example.theborokiptv.viewModel.MainActivityViewModel;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    MainActivityViewModel viewModel;
+    public static    String accessToken;
+    private ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        progressBar = findViewById(R.id.progressBar);
+
+
+        viewModel= ViewModelProviders.of(this).get(MainActivityViewModel.class);
+        viewModel.getApiAccessToken().observe(this, apiResponse -> {
+            progressBar.setVisibility(View.VISIBLE);
+            if (apiResponse == null) {
+
+
+                // handle error here
+                return;
+            }
+            if (apiResponse.getError() == null) {
+                // call is successful
+                accessToken= apiResponse.getAccessToken();
+                if(accessToken!=null){
+                    Log.i("Success", "Data for accessToken " + apiResponse.getAccessToken());
+                    getRequest();
+                }
+
+
+
+            } else {
+                // call failed.
+                Throwable e = apiResponse.getError();
+                Toast.makeText(MainActivity.this, "Error is " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Error", "Error is " + e.getLocalizedMessage());
+
+            }
+        });
+
 
 //        ApiInterface apiInterface=ApiService.getRetrofitInstance().create(ApiInterface.class);
 //        apiInterface.getAccessToken().enqueue(new Callback<AccessToken>() {
@@ -70,6 +101,31 @@ public class MainActivity extends AppCompatActivity {
 //
 //                    }
 //                });
+
+    }
+
+    public void getRequest(){
+        viewModel.getTvList(20,1).observe(this, apiResponse -> {
+            if (apiResponse == null) {
+                // handle error here
+                return;
+            }
+            if (apiResponse.getError() == null&&apiResponse.getTvList()!=null) {
+                // call is successful
+                progressBar.setVisibility(View.GONE);
+
+                Log.i("Success", "Data response TV " + apiResponse.getTvList());
+
+            } else if( apiResponse.getError()!=null){
+                // call failed.
+                Throwable e = apiResponse.getError();
+                progressBar.setVisibility(View.GONE);
+
+                Toast.makeText(MainActivity.this, "Error is " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Error", "Error is " + e.getLocalizedMessage());
+
+            }
+        });
 
     }
 }
