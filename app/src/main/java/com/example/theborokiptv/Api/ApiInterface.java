@@ -15,7 +15,6 @@ public interface ApiInterface {
 
     @POST("token?key=820783060533")
     Call<AccessToken> getAccessToken(
-            //@Query("key") long key
     );
 
     @Headers({

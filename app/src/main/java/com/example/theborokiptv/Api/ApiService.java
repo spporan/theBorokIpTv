@@ -1,37 +1,17 @@
 package com.example.theborokiptv.Api;
-
-import com.example.theborokiptv.screens.MainActivity;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.Interceptor;
+import android.content.Context;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
 public class ApiService {
 
    private final static String  BASE_URL="https://sastaiptv.com/api/";
-    private static String ACCESS_TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc2FzdGFpcHR2LmNvbVwvYXBpXC90b2tlbiIsImlhdCI6MTU3ODUxNTQ5OSwiZXhwIjoxNTc4NTE5MDk5LCJuYmYiOjE1Nzg1MTU0OTksImp0aSI6IkVIeUQ3MnNNNzJhalpCV1EiLCJzdWIiOjEsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEifQ.aWX-Lyfzooh1htFiPdWtE60j5A3mI2kF6ZQfKxECYc8";
-    final  int PAGE=1;
-    final  int  NUMBER_OF_PAGE=20;
     private static Retrofit retrofit;
     private static ApiInterface apiInterface;
+    private static OkHttpClient client;
 
-    private static OkHttpClient client = new OkHttpClient.Builder().addInterceptor(chain -> {
-        Request newRequest  = chain.request().newBuilder()
-                .addHeader("Authorization","Bearer "+"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvc2FzdGFpcHR2LmNvbVwvYXBpXC90b2tlbiIsImlhdCI6MTU3ODU5MjU2NywiZXhwIjoxNTc4NTk2MTY3LCJuYmYiOjE1Nzg1OTI1NjcsImp0aSI6IjB5cGNtYWtFblpvcjdUNU0iLCJzdWIiOjEsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEifQ.8jibPiBKnYznS3kV2yYbvVDk92Jo4nyoXCRuq-CcAUk")
-                .build();
-        return chain.proceed(newRequest);
-    }).build();
-
-
-
-
-    public static ApiInterface getRetrofitInstance() {
+    public static ApiInterface getRetrofitInstance(Context context) {
+        client= new OkHttpClient.Builder().addInterceptor(new ConnectivityInterceptor(context)).build();
         retrofit = new Retrofit.Builder()
                 .client(client)
                 .baseUrl(BASE_URL)

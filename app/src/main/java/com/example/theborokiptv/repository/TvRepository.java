@@ -1,22 +1,25 @@
 package com.example.theborokiptv.repository;
 
+import android.content.Context;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.theborokiptv.Api.ApiInterface;
 import com.example.theborokiptv.Api.ApiResponse;
 import com.example.theborokiptv.Api.ApiService;
+import com.example.theborokiptv.Api.NoConnectivityException;
 import com.example.theborokiptv.model.AccessToken;
 import com.example.theborokiptv.model.DataModel;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TvRepository {
-   public ApiInterface apiInterface;
-   public TvRepository(){
-       apiInterface= ApiService.getRetrofitInstance();
+   private ApiInterface apiInterface;
+   public TvRepository(Context context){
+       apiInterface= ApiService.getRetrofitInstance(context);
 
 
    }
@@ -28,13 +31,27 @@ public class TvRepository {
             @Override
             public void onResponse(Call<AccessToken> call, Response<AccessToken> response) {
                 if (response.isSuccessful()) {
-                    AccessTokenResponse.postValue(new ApiResponse(response.body().getAccessToken()));
+                    AccessTokenResponse.postValue(new ApiResponse(response.body().getAccessToken(),response.code()));
+                }else {
+                    Log.i("Error Code:", String.valueOf(response.code()));
+                    AccessTokenResponse.postValue(new ApiResponse(null,"Something went wrong with error code "+response.code()+"!",response.code()));
+
                 }
+
             }
 
             @Override
             public void onFailure(Call<AccessToken> call, Throwable t) {
-                AccessTokenResponse.postValue(new ApiResponse(t));
+                Log.i("Response failed:",t.getMessage());
+                if (t  instanceof NoConnectivityException) {
+                    Log.i("TAAG ", t.getMessage());
+                    AccessTokenResponse.postValue(new ApiResponse(t,t.getMessage()));
+                }else {
+                    AccessTokenResponse.postValue(new ApiResponse(t,t.getMessage()));
+
+                }
+
+
             }
         });
 
@@ -48,14 +65,25 @@ public class TvRepository {
            @Override
            public void onResponse(Call<DataModel> call, Response<DataModel> response) {
                if(response.isSuccessful()){
-                   tvListResponse.postValue(new ApiResponse(response.body().getData()));
+                   tvListResponse.postValue(new ApiResponse(response.body().getData(),response.code()));
+               }else {
+                   tvListResponse.postValue(new ApiResponse(null,"Something went wrong with error code "+response.code()+"!",response.code()));
+
+                   Log.i("Error Code:", String.valueOf(response.code()));
+
                }
 
            }
 
            @Override
            public void onFailure(Call<DataModel> call, Throwable t) {
-               tvListResponse.postValue(new ApiResponse(t));
+               if (t  instanceof NoConnectivityException) {
+                   Log.i("TAAG ", t.getMessage());
+                   tvListResponse.postValue(new ApiResponse(t,t.getMessage()));
+               }else {
+                   tvListResponse.postValue(new ApiResponse(t,t.getMessage()));
+
+               }
            }
        });
 

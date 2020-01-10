@@ -12,19 +12,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
 import com.example.theborokiptv.R;
 import com.example.theborokiptv.model.TvModel;
 import com.example.theborokiptv.screens.TvScreenActivity;
-import com.google.android.material.button.MaterialButton;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class TvListAdapater extends RecyclerView.Adapter<TvListAdapater.MyViewHolder> {
-    List<TvModel>tvModelList;
-    Context context;
+    private List<TvModel>tvModelList;
+    private Context context;
     public TvListAdapater(List<TvModel>tvModelList,Context context){
         this.tvModelList = tvModelList;
         this.context = context;
